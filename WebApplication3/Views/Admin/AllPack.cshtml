@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "AllPack";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+@model List<WebApplication3.Models.Pack>
+<style>
+
+    th {
+        text-align: center;
+    }
+</style>
+<br /><br />
+<h3>All Standard Packs</h3>
+<br /><br />
+
+
+
+<table class="table table-bordered table-striped table-responsive table-dark table-hover text-center" style="width:auto;">
+    <tr style="text-align:center;">
+        <th>Pack Name</th>
+        <th>Pack Cost</th>
+        <th>Channels</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.PackName
+            </td>
+            <td>
+                @item.PackCost
+            </td>
+            <td>
+                @foreach (var ch in item.Channels)
+                {
+                    @ch.ChannelName                    if (!ch.Equals(item.Channels.Last()))
+                    {<text>, </text>
+                    }
+                }
+
+            </td>
+        </tr>
+    }
+</table>
+
+@Html.ActionLink("Go Back", "Welcome", "Admin")

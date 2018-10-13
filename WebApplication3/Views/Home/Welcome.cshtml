@@ -1,0 +1,308 @@
+﻿
+
+@{
+    ViewBag.Title = "Welcome";
+}
+
+@using WebApplication3.Models
+
+
+@{
+
+    ViewBag.Title = "Welcome";
+    var clist = (List<Channel>)ViewData["AllChannels"];
+    var plist = (List<Pack>)ViewData["AllPacks"];
+    var subornot = (List<bool>)ViewData["SuborNot"];
+    var subornot1 = (List<bool>)ViewData["SuborNot1"];
+    var subornot2 = (List<bool>)ViewData["SuborNot2"];
+
+}
+
+
+@if (ViewBag.Message != null)
+{
+    <br />
+    <div class="alert alert-@ViewBag.Type" style="white-space: pre-line">
+        @ViewBag.Message
+
+    </div>
+}
+else
+{
+    <br />
+}
+
+
+<style>
+
+    .btn {
+        text-align: center;
+        width: 100px;
+    }
+</style>
+
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        if ("@ViewData["ProfileId"]" != "") {
+            $('.btn').removeAttr('disabled');
+        }
+        else {
+
+            document.getElementById("msg").innerHTML = "<br/><div class=\"alert alert-danger\">Hey buddy, You have not added your credit card details yet.<br /><a href=\"GetCard/\"> Add credit card! </a></div>";
+
+            $('.btn').attr('disabled', 'disabled');
+        }
+    });
+
+    if ("@Session["name"]" != "") {
+        document.getElementById("welcome").innerHTML = "Welcome " + "@Session["name"]"+",";
+    }
+
+    $(function () {
+
+        $(".dropdown-menu li a").click(function () {
+
+            $(".a #1").text($(this).text());
+            $(".btn:first-child").val($(this).text());
+
+        });
+
+    });
+
+
+</script>
+<br />
+
+
+
+<span id="msg"></span>
+
+<h4>
+    All Channels and Packs:
+</h4>
+
+
+
+<table class="table table-bordered table-striped table-responsive table-dark table-hover text-center" style="width:auto;">
+    <tr>
+        <th>Sr. No</th>
+        <th>Channel Name </th>
+        <th>Channel Cost </th>
+        <th>Select months </th>
+        <th><center>Subscribe/Unsubscribe </center></th>
+
+    </tr>
+
+
+    @for (int i = 0; i < clist.Count; i++)
+    {
+        <tr>
+            @using (Html.BeginForm("ChargeChannel", "Payment", FormMethod.Post, new { id = "regform" }))
+            {
+
+                <td>
+                    @(i + 1)
+                    <input type="hidden" id="ChannelId" name="ChannelId" value="@clist[i].ChannelId">
+                </td>
+                <td>
+                    @clist[i].ChannelName
+                    <input type="hidden" id="ChannelName" name="ChannelName" value="@clist[i].ChannelName">
+                </td>
+                <td>
+                    @clist[i].ChannelCost
+                    <input type="hidden" id="ChannelCost" name="ChannelCost" value="@clist[i].ChannelCost">
+                </td>
+                <td>
+                    @if (!subornot[i] && !subornot2[i])
+                    {
+
+                        <select id="month" name="month" class="btn-sm">
+                            @for (var j = 0; j < 25; j++)
+                            {
+                                <option value="@j">@j</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <text>--</text>
+                    }
+                </td>
+                <td>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10" style="padding-right:80px;">
+
+
+                            @if (subornot2[i])
+                            {
+                                <input type="button" id="btn" value="Subscribed" class="btn btn-secondary" />
+                            }
+                            else if (subornot[i])
+                            {
+                              <input type="submit" id="btn" formaction="/Payment/RefundChannel" disabled value="Unsubscribe" class="btn btn-danger" />
+                            }
+                            else
+                            {
+                                <input type="submit" id="btn" value="Subscribe" disabled class="btn btn-success" />
+                            }
+
+                        </div>
+                    </div>
+
+
+                </td>
+            }
+        </tr>
+
+    }
+</table>
+
+
+
+
+<table class="table table-bordered table-striped table-responsive table-dark table-hover text-center" style="width:auto;">
+    <tr>
+        <th>Sr. No</th>
+        <th>Pack Name </th>
+        <th>Pack Cost </th>
+        <th><center>Channels in Pack</center></th>
+        <th>Select months </th>
+        <th><center>Subscribe/Unsubscribe </center></th>
+
+    </tr>
+
+
+    @for (int i = 0; i < plist.Count; i++)
+    {
+        <tr>
+            @using (Html.BeginForm("ChargePack", "Payment", FormMethod.Post, new { id = "regform" }))
+            {
+
+                <td>
+                    @(i + 1)
+
+                    <input type="hidden" id="PackId" name="PackId" value="@plist[i].PackId">
+                </td>
+                <td>
+                    @plist[i].PackName
+                    <input type="hidden" id="PackName" name="PackName" value="@plist[i].PackName">
+                </td>
+                <td>
+                    @plist[i].PackCost
+                    <input type="hidden" id="PackCost" name="PackCost" value="@plist[i].PackCost">
+                </td>
+                <td>
+
+                    @foreach (var ch in plist[i].Channels)
+                    {
+                        @ch.ChannelName if (!ch.Equals(plist[i].Channels.Last()))
+                        {<text>, </text>
+                    }
+                }
+                </td>
+                <td>
+                    @if (!subornot1[i])
+                    {
+
+                        <select id="month" name="month" class="btn-sm">
+                            @for (var j = 0; j < 25; j++)
+                            {
+                                <option value="@j">@j</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <text>--</text>
+                    }
+                </td>
+                <td>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10" style="padding-right:80px;">
+
+
+                            @if (!subornot1[i])
+                            {
+
+                                <input type="submit" id="btn" value="Subscribe" disabled class="btn btn-success" />
+                            }
+                            else
+                            {
+                                @*<input type="submit" value="Are You New User?" style="margin-left:22px;" class="btn btn-primary" formaction="~/Home/Register" formmethod="get" />*@
+                                <input type="submit" id="btn" formaction="/Payment/RefundPack" disabled value="Unsubscribe" class="btn btn-danger" />
+                            }
+
+                        </div>
+                    </div>
+
+
+                </td>
+            }
+        </tr>
+
+    }
+</table>
+
+
+@*<table class="table table-bordered table-striped table-responsive table-dark table-hover text-center" style="width:auto;">
+        <tr>
+            <th>pack id</th>
+            <th>pack name </th>
+            <th>pack cost </th>
+            <th>subscription</th>
+
+
+        </tr>
+        @foreach (var p in plist)
+        {
+            <tr>
+                <td>@p.PackId</td>
+                <td>@p.PackName</td>
+                <td>@p.PackCost</td>
+                <td>
+                    <button id="subscribebutton" , onclick="location.href='@Url.Action("subscribepack", "home", new { useremail=ViewData["email"], pid = p.PackId, pname=p.PackName,pcost=p.PackCost})'">subscribe</button>
+                    <button id="autosubscribebutton">auto subscribe </button>
+                </td>
+                <td><button id="autosubscribebutton">auto subscribe</button></td> add this later, autopay wala
+
+            </tr>
+        }
+
+    </table>
+
+    <span id="msg" align="center" style="color:green;" />
+
+
+
+    <button id="id-TryApi" , onclick="location.href='@Url.Action("BankAccountTransac", "Payment")'">Try API</button>
+    <button id="id-TryApi2" , onclick="location.href='@Url.Action("TransacReporting", "Payment")'">Get Transac Report</button>*@
+
+
+<!--<input type="button" name="Try Api" value="Try ApI - 2" class="btn btn-primary btn btn-info" id="id-TryApi" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $('#id-TryApi').click(function () {
+
+        var ApiLoginID_v = "6FFQ82gjm";
+        var ApiTransactionKey_v = "4J2b278uHVx2NF9P";
+        var amount_v = "12.34";
+        var url = "/Payment/BankAccountTransac";
+        //$.post(url, { ApiLoginID: ApiLoginID_v, ApiTransactionKey: ApiTransactionKey_v}, function (data) {
+        $.post(url, function (data) {
+            $("#msg").html(data);
+
+        });
+
+    })
+
+</script>-->
+</body>

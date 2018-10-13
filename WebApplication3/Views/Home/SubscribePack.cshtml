@@ -1,0 +1,184 @@
+﻿
+
+@using System;
+
+@using WebApplication3.Models
+
+@model IEnumerable<WebApplication3.Models.ChannelsInPack>
+@{
+    Layout = null;
+}
+@{
+    var packinfo = (Pack)ViewData["packinfo"];
+}
+
+<script>
+
+    if ("@Session["name"]" != "") {
+        document.getElementById("welcome").innerHTML = "Welcome " + "@Session["name"]"+",";
+    }
+</script>
+
+@if ((bool)ViewData["AlreadySub"])
+{
+    <h2>You have already subscribed to this pack</h2>
+}
+else
+{
+
+    @functions{
+        public double CalRefundAmount(double cost, DateTime expdate)
+        {
+
+            DateTime current = DateTime.Now;
+            int monthsApart = 12 * (current.Year - expdate.Year) + current.Month - expdate.Month;
+            double monthsleft = Convert.ToDouble(Math.Abs(monthsApart));
+            double refundamount = (cost / 12) * monthsleft;
+
+            return refundamount;
+        }
+    }
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--<div><h2 style="color:green;">Channels details in the @packinfo.PackName  Pack</h2> </div>-->
+    <table class="table table-bordered table-responsive table-hover" style="width:50%" align="center">
+        <caption style="color:green;">Channels details in the @packinfo.PackName Pack</caption>
+        <tr>
+            <th>Channel Id</th>
+            <th>Channel Name </th>
+            <th>Channel Cost </th>
+            <th>Subscribed or not</th>
+            <th>expirydate</th>
+
+        </tr>
+        @foreach (var c in Model)
+        {
+            <tr>
+
+                <td>@c.ChannelId</td>
+                <td>@c.ChannelName</td>
+                <td>@c.ChannelCost</td>
+
+
+                @if (c.subscribe)
+                {
+                    <td>&#10004;</td>
+                    <td>@c.expirydate</td>
+                }
+                else
+                {
+                    <td>&#10008;</td>
+                    <td>-</td>
+                }
+
+
+            </tr>
+        }
+    </table>
+
+
+
+    <!--<h2 style="color:green;">Refund Details for Already Subscribed Channels</h2>-->
+    <table class="table table-bordered table-responsive table-hover" style="width:50%" align="center">
+        <caption style="color:green;">Refund Details for Already Subscribed Channels</caption>
+        <tr>
+            <th>Cannel Name</th>
+            <th>Refund Amount</th>
+        </tr>
+        @{
+            double RefundAmount = 0.0;
+        }
+        @foreach (var c in Model)
+        {
+            <tr>
+                @if (c.subscribe)
+                {
+                    <td>@c.ChannelName</td>
+                    var c_refundamount = @CalRefundAmount(c.ChannelCost, c.expirydate);
+                    <td>@c_refundamount</td>//claculate refund amount
+                    RefundAmount = RefundAmount + c_refundamount;
+                }
+            </tr>
+        }
+
+    </table>
+    <table class="table table-bordered table-responsive table-hover" style="width:50%" align="center">
+        <tr>
+            <td><b>Refund Amout</b></td>
+            <td>@RefundAmount</td>
+        </tr>
+        <tr>
+            <td><b>Amout to be paid</b></td>
+            <td>@packinfo.PackCost</td>
+        </tr>
+    </table>
+
+
+    <div class="container">
+        <div id="paymentbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">Make Payment</div>
+                </div>
+                <div class="panel-body">
+                    <div id="div_id_cardnumber" class="form-group required">
+                        <label for="id_cardnumber" class="control-label col-md-4  requiredField">Card Number </label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md  textinput textInput form-control" id="id_cardnumber" maxlength="30" name="cardnumber" placeholder="Enter Card Number" style="margin-bottom: 10px" type="text" />
+                        </div>
+                    </div>
+                    <div id="div_id_expirydate" class="form-group required">
+                        <label for="id_expirydate" class="control-label col-md-4  requiredField">Expiry Date</label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md textinput textInput form-control" id="id_expirydate" name="expirydate" placeholder="Enter Expiry Date" style="margin-bottom: 10px" type="number" />
+                        </div>
+                    </div>
+                    <div id="div_id_cvv" class="form-group required">
+                        <label for="id_cvv" class="control-label col-md-4  requiredField">CVV</label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md textinput textInput form-control" id="id_cvv" name="cvv" placeholder="Enter CVV" style="margin-bottom: 10px" type="number" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="aab controls col-md-4 "></div>
+                        <div class="controls col-md-8 ">
+                            <input type="button" name="pay" value="Pay" class="btn btn-primary btn btn-info" id="submit-id-pay" />
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <span id="msg" align="center" style="color:green;" />
+
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+    $('#submit-id-pay').click(function () {
+        //var url = "/Payment/ChargePack";
+        var url = "/Payment/ChargePack";
+        var cardnumber = $("#id_cardnumber").val();
+        var expirydate = $("#id_expirydate").val();
+        var cvv = $("#id_cvv").val();
+        var email = @Html.Raw(Json.Encode(ViewData["email"]));
+        var obj = @Html.Raw(Json.Encode(packinfo));
+        var ChanInPackobj = @Html.Raw(Json.Encode(Model));
+        //$.post(url, { CardNumber: cardnumber, ExpiryDate: expirydate, CVV: cvv,pname: pname}, function (data) {
+        $.post(url, { CardNumber: cardnumber, ExpiryDate: expirydate, CVV: cvv, useremail: email, pobj: obj, cinpack: ChanInPackobj}, function (data) {
+            $("#msg").html(data);
+
+        });
+
+    })
+    </script>
+}
+

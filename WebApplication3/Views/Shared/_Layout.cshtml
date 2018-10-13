@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @*<script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="~/Scripts/jquery-ui.min.js"></script>
+        <link href="~/Content/jquery-ui.css" rel="stylesheet" />*@
+
+</head>
+<body>
+
+    
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar">11</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("SilverSurfer", "Welcome", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (ViewBag.HideViewSubscriptionLink == null)
+                    {
+                        <li>@Html.ActionLink("View_Subscription", "ViewSubscr", "Home")</li>
+                    }
+                    <li><a href="https://www.visa.co.in/contact-us.html" target="_blank">Contact</a></li>
+                    @if (ViewBag.HideLogoutLink == null)
+                    {
+                        <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
+                    }
+
+                </ul>
+                <a class="navbar-brand" style="margin-left:500px;" id="welcome"></a>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Visa Inc.</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/minjquery")
+    @*    @Scripts.Render("~/bundles/jquery")*@
+    @Scripts.Render("~/bundles/jqueryui")
+    @Styles.Render("~/Content/cssjqryUi")
+
+    @Scripts.Render("~/bundles/bootstrap")
+
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

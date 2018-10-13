@@ -1,0 +1,123 @@
+﻿@model WebApplication3.Models.Customer
+
+@{
+    ViewBag.Title = "Register";
+    ViewBag.HideHomeLink = true;
+    ViewBag.HideAboutLink = true;
+    ViewBag.HideLogoutLink = true;
+}
+
+
+<head>
+
+    <style>
+        .error {
+            color: #a00;
+            background-color: #fcc;
+            border: 1px solid red;
+        }
+    </style>
+
+
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+
+    <script src="~/Scripts/Home/Register.js"></script>
+
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @*<link href="~/Content/jquery-ui.css" rel="stylesheet" />
+        <script src="~/Scripts/jquery-3.3.1.js"></script>
+        <script src="~/Scripts/jquery-ui.min.js"></script>*@
+    @*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+    @*    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>*@
+    @*<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>*@
+
+
+</head>
+
+
+<body>
+
+
+    <h2>Register</h2>
+
+
+    @using (Html.BeginForm("Register", "Home", FormMethod.Post, new { id = "regform" }))
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "required form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", id = "NameError" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContactNo, "Contact Number", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ContactNo, "", new { @class = "text-danger", id = "ContactNoError" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, "Email Address", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", id = "EmailError" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, "Residential Address", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger", id = "AddressError" })
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.DOB, "Date of Birth", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10" id='datetimepicker3'>
+                @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", id = "DOBError" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", id = "PasswordError" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RePassword, "Confirm Password", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.PasswordFor(model => model.RePassword, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "text-danger", id = "RePasswordError" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Register" disabled id="subbtn" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to Login Page", "Index")
+    </div>
+
+</body>

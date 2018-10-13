@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Logout";
+}
+
+<h2>Logout</h2>
+
+<script>
+function preventBack() { window.history.forward(); }
+setTimeout("preventBack()", 0);
+window.onunload = function () { null };
+
+</script>
+@if (ViewBag.Message != null)
+{
+    <br />
+    <div class="alert alert-@ViewBag.Type">
+        @ViewBag.Message
+    </div>
+}
+
+

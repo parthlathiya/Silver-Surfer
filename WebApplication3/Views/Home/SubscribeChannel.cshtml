@@ -1,0 +1,131 @@
+﻿
+
+@using System;
+
+@using WebApplication3.Models
+
+@model WebApplication3.Models.Channel
+
+@{
+    var refund = 0.0;
+    var final = 0.0;
+    var days = 0.0;
+    if ((bool)ViewData["AlreadySub"])
+    {
+        refund = Math.Round(  (Model.ChannelCost * Convert.ToDouble(ViewData["DaysLeft"])) / 30.0,2);
+        final = Math.Round(Model.ChannelCost - refund,2);
+        days =Math.Round(Convert.ToDouble(ViewData["DaysLeft"]), 2);
+    }
+
+
+}
+
+
+<script>
+
+    if ("@Session["name"]" != "") {
+        document.getElementById("welcome").innerHTML = "Welcome " + "@Session["name"]"+",";
+    }
+</script>
+
+
+@if ((bool)ViewData["AlreadySub"])
+    {
+        <br />
+        <div class="alert alert-danger">
+            You have already subscribed to this channel.<br /> Channel cost= @Model.ChannelCost  and expiry date=   @ViewData["ExpiryDate"] <br /> We will refund @refund/- for remaining @days days subscription.
+        </div>
+    }
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <br />
+    <br />
+
+
+    <table class="table table-bordered table-responsive table-hover text-center" style="width:45%" align="center">
+
+        <tr>
+            <td><b>Amout to be paid</b></td>
+               <td>@Model.ChannelCost</td>
+           </tr>
+    </table>
+
+
+    <div class="container">
+        <div id="paymentbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">Make Payment</div>
+                </div>
+                <div class="panel-body">
+                    <div id="div_id_cardnumber" class="form-group required">
+                        <label for="id_cardnumber" class="control-label col-md-4  requiredField">Card Number </label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md  textinput textInput form-control" id="id_cardnumber" maxlength="30" name="cardnumber" placeholder="Enter Card Number" style="margin-bottom: 10px" type="text" />
+                        </div>
+                    </div>
+                    <div id="div_id_expirydate" class="form-group required">
+                        <label for="id_expirydate" class="control-label col-md-4  requiredField">Expiry Date</label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md textinput textInput form-control" id="id_expirydate" name="expirydate" placeholder="Enter Expiry Date" style="margin-bottom: 10px" type="number" />
+                        </div>
+                    </div>
+                    <div id="div_id_cvv" class="form-group required">
+                        <label for="id_cvv" class="control-label col-md-4  requiredField">CVV</label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md textinput textInput form-control" id="id_cvv" name="cvv" placeholder="Enter CVV" style="margin-bottom: 10px" type="number" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="aab controls col-md-4 "></div>
+                        <div class="controls col-md-8 ">
+                            <input type="button" name="pay" value="Pay" class="btn btn-primary btn btn-info" id="submit-id-pay" />
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <tabe>
+        <tr>
+            <td>@ViewData["email"]</td>
+            <td>cid:@Model.ChannelId,</td>
+            <td>cname:@Model.ChannelName</td>
+            <td>ccost:@Model.ChannelCost</td>
+        </tr>
+    </tabe>
+
+    <span id="msg" align="center" style="color:green;" />
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+    $('#submit-id-pay').click(function () {
+
+        var url = "/Payment/ChargeChannel";
+        var cardnumber = $("#id_cardnumber").val();
+        var expirydate = $("#id_expirydate").val();
+        var cvv = $("#id_cvv").val();
+        //var email = '<%= ViewData["email"].ToString() %>';
+        var email = @Html.Raw(Json.Encode(ViewData["email"]));
+       var obj= @Html.Raw(Json.Encode(Model));
+
+
+        //$.post(url, { useremail:@ViewData["email"], CardNumber: cardnumber, ExpiryDate: expirydate, CVV: cvv, InvoiceDetails:@Model}, function (data) {
+        //$.post(url, { CardNumber: cardnumber, ExpiryDate: expirydate, CVV: cvv, useremail:ViewData["email"], cid:Model.ChannelId, cname:Model.ChannelName,ccost:Model.ChannelCost }, function (data) {
+        $.post(url, { CardNumber: cardnumber, ExpiryDate: expirydate, CVV: cvv, useremail: email, cobj: obj }, function (data) {
+
+
+            $("#msg").html(data);     
+
+        });
+
+    })
+    </script>
+
+

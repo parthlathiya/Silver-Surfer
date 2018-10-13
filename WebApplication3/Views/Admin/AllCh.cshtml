@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "AllCh";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+@model List<WebApplication3.Models.Channel>
+
+<style>
+
+    th {
+        text-align: center;
+    }
+</style>
+
+<br /><br />
+<h3>All Channels</h3>
+<br /><br />
+
+      <table class="table table-bordered table-striped table-responsive table-dark table-hover text-center" style="width:auto;">
+          <tr>
+              <th>Channel Name</th>
+              <th>Channel Cost</th>
+          </tr>
+          @foreach (var item in Model)
+          {
+              <tr>
+                  <td>
+                      @item.ChannelName
+                  </td>
+                  <td>
+                      @item.ChannelCost
+                  </td>
+              </tr>
+          }
+      </table>
+
+@Html.ActionLink("Go Back", "Welcome", "Admin")

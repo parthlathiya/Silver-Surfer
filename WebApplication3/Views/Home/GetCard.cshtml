@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "GetCard";
+}
+
+
+@model WebApplication3.Models.Channel
+
+
+
+
+@using (Html.BeginForm("CreateCustProfile", "Payment", FormMethod.Post))
+{
+    <div class="container">
+        <div id="paymentbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">Enter Credit Card Details</div>
+                </div>
+                <div class="panel-body">
+                    <div id="div_id_cardnumber" class="form-group required">
+                        <label for="id_cardnumber" class="control-label col-md-4  requiredField">Card Number </label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md  textinput textInput form-control" id="cardnumber" maxlength="30" name="cardnumber" placeholder="Enter Card Number" style="margin-bottom: 10px" type="text" />
+                        </div>
+                    </div>
+                    <div id="div_id_expirydate" class="form-group required">
+                        <label for="id_expirydate" class="control-label col-md-4  requiredField">Expiry Date</label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md textinput textInput form-control" id="expirydate" name="expirydate" placeholder="Enter Expiry Date" style="margin-bottom: 10px" type="number" />
+                        </div>
+                    </div>
+                    <div id="div_id_cvv" class="form-group required">
+                        <label for="id_cvv" class="control-label col-md-4  requiredField">CVV</label>
+                        <div class="controls col-md-8 ">
+                            <input class="input-md textinput textInput form-control" id="cvv" name="cvv" placeholder="Enter CVV" style="margin-bottom: 10px" type="number" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="aab controls col-md-4 "></div>
+                        <div class="controls col-md-8 ">
+                            <input type="submit" name="pay" value="Submit" class="btn btn-primary btn btn-info" id="submit-id-pay" />
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+    @*<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+    <script type="text/javascript">
+
+        $('#submit-id-pay').click(function () {
+
+            var url = "/Payment/CreateCustProfile/";
+            var cardnumber = $("#id_cardnumber").val();
+            var expirydate = $("#id_expirydate").val();
+            var cvv = $("#id_cvv").val();
+
+            $.post(url, { CardNumber: cardnumber, ExpiryDate: expirydate, CVV: cvv }, function (data) {
+
+                //  $("#msg").html(data);
+
+            });
+
+        })
+    </script>*@

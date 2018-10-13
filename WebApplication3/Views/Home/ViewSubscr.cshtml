@@ -1,0 +1,124 @@
+﻿
+
+
+@{
+
+    ViewBag.Title = "Welcome";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model WebApplication3.ViewModels.CustomerList
+
+@using WebApplication3.Models;
+
+
+<script>
+
+    if ("@Session["name"]" != "") {
+        document.getElementById("welcome").innerHTML = "Welcome " + "@Session["name"]"+",";
+    }
+</script>
+
+
+@if (ViewBag.Message != null)
+{
+    <br />
+    <div class="alert alert-@ViewBag.Type">
+        @ViewBag.Message
+    </div>
+}
+else
+{
+    <br />
+}
+
+
+@if (ViewBag.SubDetails != null)
+{
+    <div>
+
+
+        @{
+
+            List<Subscription> sublist = ViewBag.SubDetails;
+
+            if (!sublist.Any())
+            {
+                <br />
+                <div class="alert alert-danger">
+                    You have not subscribed for any Channel or Pack!
+                </div>
+
+            }
+            else
+            {
+
+                <h4>
+                    Subscription details:
+                </h4>
+
+                <table class="table table-bordered table-striped table-responsive table-dark table-hover text-center" style="width:auto;">
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Cost</th>
+                            <th>Expiry Date</th>
+                        </tr>
+                    </thead>
+
+                    @{
+                        var i = 0;
+                    }
+                    @foreach (var sub in sublist)
+                    {
+                        i = i + 1;
+
+
+                        foreach (var item in sub.packs)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>Pack</td>
+                                <td>
+                                    @item.PackName
+                                </td>
+                                <td>
+                                    @item.PackCost
+                                </td>
+                                <td>
+                                    @sub.expirydate
+                                </td>
+                            </tr>
+                        }
+
+                        foreach (var item in sub.channels)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>Channel</td>
+
+                                <td>
+                                    @item.ChannelName
+                                </td>
+                                <td>
+                                    @item.ChannelCost
+                                </td>
+                                <td>
+                                    @sub.expirydate
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+                <br />
+                <br />
+            }
+
+        }
+    </div>
+}
+
+
+

@@ -1,0 +1,183 @@
+﻿
+
+<style type="text/css">
+
+    table {
+        max-width: none;
+    }
+
+    #minicart1 {
+        display: none;
+    }
+
+    #ShowCart1:hover + #minicart1 {
+        display: block;
+    }
+
+
+    #minicart2 {
+        display: none;
+    }
+
+    #ShowCart2:hover + #minicart2 {
+        display: block;
+    }
+
+    #minicart3 {
+        display: none;
+    }
+
+    #ShowCart3:hover + #minicart3 {
+        display: block;
+    }
+
+
+    th {
+        text-align: center;
+    }
+
+</style>
+
+
+
+@{
+
+    ViewBag.Title = "Welcome";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@*<h2 style="color:green;"> Welcome @ViewData["AdminName"] ! </h2>*@
+
+@model WebApplication3.ViewModels.CustomerList
+
+@using WebApplication3.Models;
+
+@if (ViewBag.Message != null)
+{
+    <br />
+    <div class="alert alert-@ViewBag.Type">
+        @ViewBag.Message
+    </div>
+}
+else
+{
+    <br />
+}
+
+<br />
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<input type="button" class="btn btn-secondary" value="Add Channel" onclick="location.href='@Url.Action("AddCh", "Admin")'" />
+
+<input type="button" class="btn btn-secondary" value="Add Pack" onclick="location.href='@Url.Action("AddPack", "Admin")'" />
+
+<br />
+<br />
+<br />
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        <label for="label">Show subscription for:</label>
+    </div>
+
+    <div class="form-group">
+        @Html.DropDownListFor(m => m.Email, Model.CustListItems, " Select Customer Email", htmlAttributes: new { @class = "selectpicker form-control " })
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Submit" formaction="~/Admin/Welcome" formmethod="post" class="btn btn-primary" />
+    </div>
+}
+
+
+@if (ViewBag.SubDetails != null)
+{
+    <div>
+
+
+        @{
+
+            List<Subscription> sublist = ViewBag.SubDetails;
+
+            if (!sublist.Any())
+            {
+                <br />
+                <div class="alert alert-danger">
+                    This user has not subscribed for any Channel or Pack!
+                </div>
+
+            }
+            else
+            {
+            
+                <h4>
+                    Subscription details for Email = @ViewBag.Email 
+                </h4>
+
+                    <table class="table table-bordered table-striped table-responsive table-dark table-hover text-center" style="width:auto;">
+                        <thead>
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Cost</th>
+                                <th>Expiry Date</th>
+                            </tr>
+                        </thead>
+                        
+                        @{
+                            var i = 0;
+                        }
+                        @foreach (var sub in sublist)
+                        {
+                            i = i + 1;
+
+
+                            foreach (var item in sub.packs)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>Pack</td>
+                                    <td>
+                                        @item.PackName
+                                    </td>
+                                    <td>
+                                        @item.PackCost
+                                    </td>
+                                    <td>
+                                        @sub.expirydate
+                                    </td>
+                                </tr>
+                            }
+
+                            foreach (var item in sub.channels)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>Channel</td>
+
+                                    <td>
+                                        @item.ChannelName
+                                    </td>
+                                    <td>
+                                        @item.ChannelCost
+                                    </td>
+                                    <td>
+                                        @sub.expirydate
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+            <br />
+            <br />
+        }
+
+        }
+    </div>
+}
+
+
+
